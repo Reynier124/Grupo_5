@@ -1,0 +1,15 @@
+# 📖 Glosario de Términos
+
+Término | Definición
+Sprint | Período de tiempo fijo (normalmente entre 1 a 4 semanas) en el que el equipo desarrolla un conjunto de tareas definidas.
+Historia de Usuario | Descripción breve de una necesidad o requerimiento visto desde el punto de vista del usuario.
+Product Backlog | Lista priorizada de todas las funcionalidades, mejoras y correcciones pendientes en un proyecto ágil.
+Sprint Backlog | Conjunto de tareas seleccionadas del Product Backlog que se realizarán durante un sprint.
+Scrum Master | Persona encargada de facilitar el proceso Scrum y de ayudar al equipo a eliminar obstáculos.
+Product Owner | Persona responsable de definir las características del producto y de priorizar el trabajo del equipo.
+Daily Meeting | Reunión diaria breve donde el equipo comenta qué hizo ayer, qué hará hoy y si tiene algún impedimento.
+Burndown Chart | Gráfico que muestra la cantidad de trabajo restante a lo largo del sprint.
+Estimación | Valor que indica cuánto esfuerzo, tiempo o complejidad requiere una tarea o historia de usuario.
+Definición de Hecho (Definition of Done) | Criterios que deben cumplirse para considerar que una tarea o historia está completamente terminada.
+Prioridad | Nivel de importancia asignado a una tarea o historia de usuario (puede ser alta, media o baja).
+Estado | Situación actual de una tarea (por ejemplo: No empezada, En progreso, Terminada).
