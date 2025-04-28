@@ -7,3 +7,6 @@ Grupo 5 en ingeniería de software
 - Reynier López
 - Ian Olmedo
 - Camila Choque
+
+## Repositorio de Github
+https://github.com/Reynier124/Grupo_5
