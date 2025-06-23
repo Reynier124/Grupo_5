@@ -1,0 +1,251 @@
+
+/* Header con gradiente */
+.header-gradient {
+  background: linear-gradient(135deg, #4dd0e1 0%, #9c27b0 100%);
+  padding: 0px 0;
+  min-height: 120px;
+}
+
+.logo-container {
+  padding: 20px 30px 30px 10px;
+}
+
+.logo-text {
+  background-color: white;
+  color: #333;
+  padding: 15px 30px;
+  border-radius: 50px;
+  font-size: 24px;
+  font-weight: bold;
+  display: inline-block;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Contenido principal */
+.main-content {
+  background-color: #f8f9fa;
+  min-height: calc(100vh - 120px);
+  padding: 60px 0;
+}
+
+.register-container {
+  background-color: white;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* Avatar del usuario */
+.user-avatar {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.avatar-circle {
+  width: 60px;
+  height: 60px;
+  background-color: white;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0px;
+}
+
+.avatar-circle i {
+  font-size: 50px;
+  color: white;
+}
+
+/* Formulario */
+.form-group {
+  margin-bottom: 25px;
+}
+
+.input-group {
+  border-radius: 50px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.icon-container {
+  background-color: #333;
+  border: none;
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 60px;
+}
+
+.icon-container i {
+  color: white;
+  font-size: 18px;
+}
+
+.custom-input {
+  background: linear-gradient(135deg, #0288d1 0%, #00acc1 100%);
+  border: none;
+  padding: 15px 25px;
+  font-size: 16px;
+  color: white;
+  border-radius: 0 50px 50px 0;
+}
+
+.custom-input::placeholder {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 16px;
+}
+
+.custom-input:focus {
+  background: linear-gradient(135deg, #0277bd 0%, #0097a7 100%);
+  box-shadow: none;
+  color: white;
+}
+
+.custom-input:focus::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Botón de registro */
+.btn-register {
+  background: linear-gradient(135deg, #0288d1 0%, #00acc1 100%);
+  border: none;
+  color: white;
+  padding: 12px 30px;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(2, 136, 209, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btn-register:hover {
+  background: linear-gradient(135deg, #0277bd 0%, #0097a7 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(2, 136, 209, 0.4);
+  color: white;
+}
+
+.btn-register:disabled {
+  background: #ccc;
+  transform: none;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.input-icon-container {
+  position: relative;
+  border-radius: 50px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.input-icon {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #333 !important;
+  font-size: 18px;
+  z-index: 2;
+  background: none !important;
+}
+
+.input-with-icon {
+  background: linear-gradient(135deg, #0288d1 0%, #00acc1 100%);
+  border: none;
+  padding: 15px 25px 15px 60px; /* Padding izquierdo mayor para el icono */
+  font-size: 16px;
+  color: white;
+  border-radius: 50px;
+  width: 100%;
+}
+
+.input-with-icon::placeholder {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 16px;
+}
+
+.input-with-icon:focus {
+  background: linear-gradient(135deg, #0277bd 0%, #0097a7 100%);
+  box-shadow: none;
+  color: white;
+  outline: none;
+}
+
+.input-with-icon:focus::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .main-content {
+    padding: 30px 0;
+  }
+  
+  .register-container {
+    margin: 0 15px;
+    padding: 30px 20px;
+  }
+  
+  .logo-text {
+    font-size: 20px;
+    padding: 12px 25px;
+  }
+  
+  .avatar-circle {
+    width: 90px;
+    height: 90px;
+  }
+  
+  .avatar-circle i {
+    font-size: 35px;
+  }
+  
+  .custom-input {
+    font-size: 14px;
+    padding: 12px 20px;
+  }
+  
+  .icon-container {
+    padding: 12px 15px;
+  }
+
+  .input-icon {
+    left: 15px;
+    font-size: 16px;
+  }
+  
+  .input-with-icon {
+    padding: 12px 20px 12px 50px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-gradient {
+    padding: 15px 0;
+    min-height: 100px;
+  }
+  
+  .logo-container {
+    padding: 10px 15px;
+    text-align: center;
+  }
+  
+  .register-container {
+    padding: 25px 15px;
+  }
+
+    .input-icon {
+    left: 12px;
+    font-size: 14px;
+    }
+  
+  .input-with-icon {
+    padding: 12px 15px 12px 45px;
+  }
+}
