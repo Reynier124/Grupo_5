@@ -1,0 +1,178 @@
+.umbook-header {
+  width: 100%;
+  background: linear-gradient(to right, #60a5fa, #a855f7, #9333ea);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.container-fluid {
+  padding: 1rem 1.5rem;
+  background: linear-gradient(to right, #79AEC1, #550691);
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo-section {
+  flex-shrink: 0;
+}
+
+.logo-btn {
+  background-color: white;
+  color: #1f2937;
+  font-weight: 600;
+  font-size: 1.25rem;
+  padding: 0.5rem 1.5rem;
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.logo-btn:hover {
+  background-color: #f3f4f6;
+}
+
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  flex: 1;
+  justify-content: center;
+}
+
+.nav-link {
+  color: white;
+  font-size: 1.125rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.nav-link:hover {
+  color: #e5e7eb;
+}
+
+.icon-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 0.25rem;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+}
+
+.icon-btn:hover {
+  color: #e5e7eb;
+}
+
+.icon {
+  height: 1.75rem;
+  width: 1.75rem;
+}
+
+.icon-lg {
+  height: 2rem;
+  width: 2rem;
+}
+
+.notification-wrapper {
+  position: relative;
+}
+
+.notification-btn {
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  position: relative;
+}
+
+.badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: red;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 12px;
+}
+
+/* Dropdown */
+.notification-dropdown {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  width: 320px;
+  background: white;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  border-radius: 6px;
+  z-index: 1000;
+}
+
+/* Header */
+.dropdown-header {
+  padding: 10px;
+  font-weight: bold;
+  border-bottom: 1px solid #eee;
+}
+
+/* Lista scrolleable */
+.notification-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+/* Item */
+.notification-item {
+  padding: 10px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.notification-item:hover {
+  background: #f7f7f7;
+}
+
+.notification-message {
+  font-size: 14px;
+}
+
+.notification-date {
+  font-size: 12px;
+  color: gray;
+  margin-top: 4px;
+}
+
+/* Estado vacío */
+.empty-notifications {
+  padding: 20px;
+  text-align: center;
+  color: gray;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .nav-menu {
+    gap: 1rem;
+  }
+  
+  .nav-link {
+    font-size: 1rem;
+  }
+  
+  .icon-section {
+    gap: 0.5rem;
+  }
+}

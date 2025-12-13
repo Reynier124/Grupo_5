@@ -82,7 +82,7 @@ class BaseRepositoryImpl(BaseRepository):
     def update(self, id_key: int, changes: dict) -> BaseSchema:
         with self.session_scope() as session:
             # Filter the instance with the given id_key
-            instance = session.query(self.model).filter(self.model.id_key == id_key).first()
+            instance = session.query(self.model).filter(self.model.id == id_key).first()
             if instance is None:
                 raise InstanceNotFoundError(f"No instance found with id {id_key}")
             # Update the instance with the new data

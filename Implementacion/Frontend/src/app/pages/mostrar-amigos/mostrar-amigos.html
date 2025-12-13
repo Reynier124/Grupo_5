@@ -1,0 +1,32 @@
+<app-header></app-header>
+<div class="container">
+    <div class="search-container">
+        <input type="text" class="search-box" placeholder="Buscar amigos...">
+    </div>
+    <!-- Friends List -->
+    <div class="friends-list" *ngFor="let friend of friends">
+        <div class="friend-item">
+            <div class="friend-avatar d-flex align-items-center justify-content-center bg-secondary text-white rounded-circle">
+                <i class="fa-solid fa-user fa-2x"></i>
+            </div>
+            <div class="friend-info">
+                <div class="friend-name">{{ friend.nombre }}</div>
+                <div class="friend-status">{{ friend.email }}</div>
+            </div>
+            <div class="friend-actions">
+                <button class="action-btn btn-message">Mensaje</button>
+                <button class="action-btn btn-remove" 
+                (click)="eliminarAmigo(friend.id, friend.nombre)">
+                    Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty State (show when no friends) -->
+    <div *ngIf="friends.length == 0" class="empty-state">
+        <div class="empty-title">No tienes amigos agregados</div>
+        <div class="empty-text">Comienza a agregar amigos para verlos aquí</div>
+    </div>
+
+</div>
