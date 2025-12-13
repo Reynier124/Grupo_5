@@ -6,11 +6,15 @@ import { HttpClientModule } from '@angular/common/http'
 import { AppRoutingModule } from './app-routing-module';
 import { App } from './app';
 import { Register } from './pages/register/register';
+import { MostrarAmigos } from './pages/mostrar-amigos/mostrar-amigos';
+import { Header } from './components/header/header';
 
 @NgModule({
   declarations: [
     App,
-    Register
+    Register,
+    MostrarAmigos,
+    Header
   ],
   imports: [
     BrowserModule,

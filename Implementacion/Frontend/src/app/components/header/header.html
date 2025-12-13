@@ -1,0 +1,105 @@
+<div class="container-fluid border-bottom bg-white">
+  <div class="row align-items-center py-2">
+    <div class="col-3">
+        <div class="logo-section">
+        <button class="logo-btn">UMBook</button>
+        </div>
+    </div>
+
+    <div class="col-1"></div>
+
+    <div class="col-3">
+      <div class="row text-center">
+
+        <div class="col-4">
+          <a class="nav-link fw-semibold" href="#grupos">
+            Grupos
+          </a>
+        </div>
+
+        <div class="col-4">
+          <a class="nav-link fw-semibold" href="#album">
+            Álbum
+          </a>
+        </div>
+
+        <div class="col-4">
+          <a class="nav-link fw-semibold" href="#amigos">
+            Amigos
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="col-3">
+      <div class="d-flex justify-content-end align-items-center gap-3">
+
+        <div class="position-relative">
+
+          <button
+            class="btn btn-light position-relative"
+            (click)="toggleNotifications()"
+          >
+            <i class="fa-solid fa-bell"></i>
+
+            <span
+              class="position-absolute top-0 start-90 translate-middle badge rounded-pill bg-danger"
+              *ngIf="notifications.length > 0"
+            >
+              {{ notifications.length }}
+            </span>
+          </button>
+
+          <!-- Dropdown -->
+          <div
+            class="card position-absolute end-0 mt-2 shadow"
+            style="width: 300px; max-height: 350px;"
+            *ngIf="showNotifications"
+          >
+            <div class="card-header fw-bold">
+              Notificaciones
+            </div>
+            <div
+              class="list-group list-group-flush overflow-auto"
+              style="max-height: 280px;"
+            >
+              <div
+                class="list-group-item"
+                *ngFor="let n of notifications"
+              >
+                <div class="fw-semibold">
+                  {{ n.mensaje }}
+                </div>
+                <small class="text-muted">
+                  {{ n.fecha_hora | date:'short' }}
+                </small>
+              </div>
+
+              <div
+                class="list-group-item text-center text-muted"
+                *ngIf="notifications.length === 0"
+              >
+                No tenés notificaciones
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <button class="btn btn-light">
+          <i class="fa-solid fa-user"></i>
+        </button>
+
+        <button class="btn btn-light">
+          <i class="fa-solid fa-ellipsis-vertical"></i>
+        </button>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+

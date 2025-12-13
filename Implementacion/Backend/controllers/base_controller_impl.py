@@ -7,11 +7,11 @@ from services.base_service import BaseService
 class BaseControllerImpl(BaseController):
     """Base controller implementation."""
 
-    def __init__(self, schema_in: Type[BaseSchema], schema_out: Optional[Type[BaseSchema]], service: BaseService):
+    def __init__(self, schema_in: Type[BaseSchema], schema_out: Optional[Type[BaseSchema]], service: BaseService, name: str):
         self.service = service
         self.schema_in = schema_in
         self.schema_out = schema_out
-        self.blueprint = Blueprint('base', __name__)
+        self.blueprint = Blueprint(name, __name__)
 
         self.blueprint.add_url_rule("/", view_func=self.get_all, methods=["GET"])
         self.blueprint.add_url_rule("/<int:id_key>", view_func=self.get_one, methods=["GET"])

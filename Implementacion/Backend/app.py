@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from controllers.health_check import health_bp
 from controllers.usuario_controller import UsuarioController
+from controllers.notificacion_controller import NotificacionController
 import logging
 
 from config.database import Database, DATABASE_URI
@@ -32,8 +33,10 @@ def create_flask_app():
     db.init_app(flask_app)
 
     usuario_controller = UsuarioController()
+    notificacion_controller = NotificacionController()
 
     flask_app.register_blueprint(usuario_controller.blueprint, url_prefix='/usuarios')
+    flask_app.register_blueprint(notificacion_controller.blueprint, url_prefix='/notificaciones')
     flask_app.register_blueprint(health_bp, url_prefix='/health_check')
 
 
