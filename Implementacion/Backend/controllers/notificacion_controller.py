@@ -19,18 +19,13 @@ class NotificacionController(BaseControllerImpl):
     
 
     def enviar_notificacion(self):
-        """
-        Endpoint para enviar (crear) una notificación
-        Body: {user_id, mensaje, tipo}
-        """
+        # [OBSERVER - Paso 4] NotificacionController recibe la petición de ServicioNotificacion y delega a NotificacionService
         try:
             if not request.is_json:
                 return jsonify({"error": "Content-Type debe ser application/json"}), 415
             data = self.schema_in(**request.get_json())
-               
-            # Enviar notificación a través del servicio
             notificacion = self.service.enviar_notificacion(data)
-            
+            # [OBSERVER - Paso 9] Retorna 201 al ServicioNotificacion del frontend
             return self.schema_out.from_orm(notificacion).dict(), 201
             
         except ValueError as e:

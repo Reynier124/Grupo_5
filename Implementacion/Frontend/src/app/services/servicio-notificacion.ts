@@ -6,6 +6,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 })
 export class ServicioNotificacion {
   url='/api';
+  // [OBSERVER - Subject] Canal central del patrón: almacena suscriptores y emite eventos hacia ellos
   private notificationSubject = new Subject<void>();
 
   constructor(
@@ -63,7 +64,7 @@ export class ServicioNotificacion {
     return this.httpClient.delete<any>(`${this.url}/notificaciones/${id}`, requestOptions).pipe(take(1));
   }
 
-  // POST - Enviar notificación
+  // [OBSERVER - Paso 3] ServicioNotificacion → NotificacionController: HTTP POST /notificaciones/enviar
   enviarNotificacion(data: any): Observable<any>{
     let headers = new HttpHeaders({
       'Content-Type': 'application/json'
@@ -90,10 +91,12 @@ export class ServicioNotificacion {
     return this.httpClient.put<any>(`${this.url}/notificaciones/marcar-leida/${id}`, requestOptions).pipe(take(1));
   }
 
+  // [OBSERVER - Paso 11] Subject.next() notifica a todos los Observers suscriptos
   emitNotificationRefresh():void{
     this.notificationSubject.next();
   }
 
+  // [OBSERVER] Expone el Observable para que los Observers (Header, MostrarAmigos) se suscriban
   onNotificationRefresh(): Observable<any> {
     return this.notificationSubject.asObservable();
   }

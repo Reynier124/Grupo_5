@@ -1,0 +1,374 @@
+================================================================================
+               GUIA DEL PROYECTO - UMBook (Grupo 5)
+================================================================================
+
+Stack tecnologico:
+  - Backend:  Python 3.12 + Flask + SQLAlchemy + SQLite
+  - Frontend: Angular 20 + Bootstrap 5
+
+================================================================================
+  PARTE 1: INICIAR EL BACKEND (Flask)
+================================================================================
+
+PRE-REQUISITOS
+--------------
+- Python 3.12 instalado
+- pip instalado
+
+PASOS
+-----
+
+1. Abrir una terminal y navegar a la carpeta del backend:
+
+       cd Backend
+
+2. Activar el entorno virtual.
+   El proyecto tiene dos carpetas de entorno virtual: "venv" y "env".
+   Usar la que este disponible:
+
+       source venv/bin/activate
+       (o si esa falla: source env/bin/activate)
+
+   En Windows usar:
+       venv\Scripts\activate
+
+3. Instalar las dependencias (solo la primera vez):
+
+       pip install -r requirements.txt
+
+4. Iniciar el servidor Flask:
+
+       python app.py
+
+5. El servidor queda escuchando en:
+
+       http://localhost:8000
+
+   Endpoints disponibles:
+     - GET  /health_check              -> Verificar que el servidor esta activo
+     - GET  /usuarios                  -> Listar usuarios
+     - POST /usuarios                  -> Crear usuario
+     - GET  /usuarios/<id>             -> Obtener usuario por ID
+     - GET  /notificaciones            -> Listar notificaciones
+     - POST /notificaciones            -> Crear notificacion
+     - GET  /notificaciones/usuario/<id> -> Notificaciones de un usuario
+     - POST /notificaciones/enviar     -> Enviar notificacion a un usuario
+     - PUT  /notificaciones/marcar-leida/<id> -> Marcar notificacion como leida
+
+NOTAS
+-----
+- La base de datos SQLite se crea automaticamente en Backend/sqlite.db
+  la primera vez que se inicia el servidor.
+- Los logs se guardan en Backend/app.log y tambien se muestran en consola.
+- CORS esta configurado para aceptar peticiones desde http://localhost:4200
+  (el puerto del frontend Angular).
+
+
+================================================================================
+  PARTE 2: INICIAR EL FRONTEND (Angular)
+================================================================================
+
+PRE-REQUISITOS
+--------------
+- Node.js 20+ instalado
+- npm instalado
+- Angular CLI 20 instalado globalmente (opcional, ya viene en node_modules):
+      npm install -g @angular/cli
+
+PASOS
+-----
+
+1. Abrir UNA SEGUNDA terminal (dejar el backend corriendo en la primera)
+   y navegar a la carpeta del frontend:
+
+       cd Frontend
+
+2. Instalar las dependencias de Node (solo la primera vez):
+
+       npm install
+
+3. Iniciar el servidor de desarrollo Angular:
+
+       npm start
+       (equivalente a: ng serve)
+
+4. El frontend queda disponible en:
+
+       http://localhost:4200
+
+   El frontend enruta las llamadas /api/* al backend en puerto 8000
+   mediante el archivo proxy.conf.json. Es decir:
+     /api/notificaciones -> http://localhost:8000/notificaciones
+     /api/usuarios       -> http://localhost:8000/usuarios
+
+RUTAS DE LA APLICACION
+-----------------------
+   /register          -> Pantalla de registro de usuario
+   /amigos/:id        -> Pantalla de amigos del usuario con ID dado
+
+
+================================================================================
+  PARTE 3: DEMOSTRACION DEL PATRON DE DISEÑO OBSERVER
+              (Notificaciones en tiempo real dentro de la sesion)
+================================================================================
+
+DESCRIPCION DEL PATRON
+-----------------------
+El patron Observer permite que un objeto (el "Subject") notifique
+automaticamente a multiples "Observers" cuando su estado cambia,
+sin que el Subject necesite conocer los detalles de cada Observer.
+
+En este proyecto se implementa con RxJS (libreria reactiva de Angular):
+  - Subject (Observable): ServicioNotificacion.notificationSubject
+  - Observers suscriptos: Header y MostrarAmigos
+
+COMO FUNCIONA EN EL CODIGO
+---------------------------
+
+1. ServicioNotificacion (src/app/services/servicio-notificacion.ts)
+   actua como el "Subject" del patron:
+
+     private notificationSubject = new Subject<void>();
+
+     emitNotificationRefresh(): void {
+       this.notificationSubject.next();   // <-- dispara el evento
+     }
+
+     onNotificationRefresh(): Observable<any> {
+       return this.notificationSubject.asObservable();  // <-- canal de escucha
+     }
+
+2. Header (src/app/components/header/header.ts)
+   actua como "Observer" y se suscribe al Subject:
+
+     this.subscription = this.notificationService
+       .onNotificationRefresh()
+       .subscribe(() => {
+         this.loadNotifications();  // <-- recarga notificaciones del backend
+       });
+
+3. MostrarAmigos (src/app/pages/mostrar-amigos/mostrar-amigos.ts)
+   tambien actua como "Observer":
+
+     this.notificationSubscription = this.notificationService
+       .getNotificationObservable()
+       .subscribe(notification => {
+         this.notifications.unshift(notification);
+       });
+
+FLUJO COMPLETO DEL PATRON
+--------------------------
+
+  [Usuario]
+     |
+     | Hace click en "Eliminar" amigo
+     v
+  [MostrarAmigos.eliminarAmigo()]
+     |
+     | 1. Llama DELETE /api/usuarios/:id/amigos/:friendId
+     | 2. Al obtener respuesta exitosa, llama POST /api/notificaciones/enviar
+     |    con el mensaje "Has eliminado a X de tu lista de amigos"
+     v
+  [Backend Flask]
+     |
+     | Guarda la notificacion en SQLite
+     | Retorna 201 Created
+     v
+  [MostrarAmigos - callback next()]
+     |
+     | Llama: this.notificationService.emitNotificationRefresh()
+     v
+  [ServicioNotificacion.notificationSubject.next()]
+     |
+     | Emite evento a TODOS los Observers suscriptos
+     |
+     +----------> [Header recibe el evento]
+     |                  Llama loadNotifications()
+     |                  GET /api/notificaciones/usuario/1
+     |                  Actualiza el contador del icono de campana
+     |
+     +----------> [MostrarAmigos recibe el evento]
+                       Llama loadNotifications()
+                       Actualiza la lista de notificaciones visible
+
+================================================================================
+  GUIA PASO A PASO PARA DEMOSTRAR EL PATRON OBSERVER
+================================================================================
+
+PREPARACION (hacer esto una sola vez antes de la demo)
+-------------------------------------------------------
+
+Paso 1: Iniciar el backend.
+   - Abrir terminal, ir a Backend/, activar venv, ejecutar: python app.py
+   - Verificar que diga "Running on http://0.0.0.0:8000"
+
+Paso 2: Iniciar el frontend.
+   - Abrir otra terminal, ir a Frontend/, ejecutar: npm start
+   - Esperar hasta ver "Application bundle generation complete"
+
+Paso 3: Cargar datos de prueba en la base de datos.
+   - Si la base de datos esta vacia, registrar al menos 2 usuarios
+     usando la pantalla /register o directamente via curl:
+
+     curl -X POST http://localhost:8000/usuarios \
+       -H "Content-Type: application/json" \
+       -d '{"nombre": "Juan", "email": "juan@test.com", "password": "1234", "rol": "user"}'
+
+     curl -X POST http://localhost:8000/usuarios \
+       -H "Content-Type: application/json" \
+       -d '{"nombre": "Maria", "email": "maria@test.com", "password": "1234", "rol": "user"}'
+
+   - Agregar una amistad entre ellos. Primero obtener los IDs:
+
+     curl http://localhost:8000/usuarios
+
+   - Luego crear la amistad (reemplazar <id_juan> y <id_maria> con los IDs reales):
+
+     curl -X POST http://localhost:8000/usuarios/<id_juan>/amigos/<id_maria>
+
+DEMOSTRACION DEL PATRON OBSERVER (mostrar esto al publico)
+----------------------------------------------------------
+
+Paso 4: Abrir el navegador en http://localhost:4200/amigos/1
+   - Se ve la lista de amigos del usuario con ID=1.
+   - En el header (barra superior) se ve el icono de campana (sin notificaciones).
+   - EXPLICAR: Ambos componentes (Header y MostrarAmigos) estan
+     SUSCRIPTOS al mismo Subject de ServicioNotificacion.
+
+Paso 5: Abrir las DevTools del navegador (F12) > pestaña Console.
+   - Esto permite ver los logs en tiempo real para seguir el flujo.
+
+Paso 6: Hacer click en el boton "Eliminar" junto a un amigo.
+   - Aparece el dialogo de confirmacion. Hacer click en "Aceptar".
+   - OBSERVAR en la consola:
+       "Amigo eliminado: ..."
+       "Enviando notificacion: ... al usuario ID: 1"
+       "Notificacion creada: ..."
+   - EXPLICAR: En este momento se llama emitNotificationRefresh()
+     que dispara el evento en el Subject.
+
+Paso 7: Observar que el icono de campana en el header se actualiza.
+   - El badge rojo aparece con el numero "1".
+   - EXPLICAR: El componente Header recibio el evento del Observer
+     y recargo las notificaciones del backend automaticamente,
+     SIN que MostrarAmigos le avisara directamente.
+   - Esta es la clave del patron: desacoplamiento total entre emisor y receptores.
+
+Paso 8: Hacer click en el icono de campana para abrir el dropdown.
+   - Se muestra la notificacion: "Has eliminado a X de tu lista de amigos"
+   - EXPLICAR: El Header (Observer 1) fue notificado y mostro la notificacion.
+
+Paso 9: (Opcional) Agregar un segundo Observer para mostrar el poder del patron.
+   - El componente MostrarAmigos tambien esta suscripto y actualiza
+     su propia lista de notificaciones al mismo tiempo.
+
+Paso 10: Eliminar otro amigo.
+   - El contador del badge aumenta a "2".
+   - El dropdown muestra ambas notificaciones.
+   - EXPLICAR: Se puede agregar cualquier cantidad de Observers sin
+     modificar el codigo del Subject (ServicioNotificacion).
+
+PUNTOS CLAVE A DESTACAR EN LA DEMO
+------------------------------------
+
+1. DESACOPLAMIENTO: MostrarAmigos no llama directamente al Header.
+   Solo llama emitNotificationRefresh() y el sistema se encarga de
+   notificar a todos los suscriptores.
+
+2. MULTIPLE OBSERVERS: Tanto Header como MostrarAmigos reaccionan
+   al mismo evento sin conocerse entre si.
+
+3. CICLO DE VIDA: Los Observers se suscriben en ngOnInit() y se
+   desuscriben en ngOnDestroy() para evitar memory leaks.
+
+4. IMPLEMENTACION CON RxJS: Subject<void> es el Subject del patron.
+   Observable es el canal de comunicacion. subscribe() registra Observers.
+
+================================================================================
+  RESUMEN DE ARCHIVOS CLAVE DEL PATRON OBSERVER
+================================================================================
+
+  ARCHIVO                                              ROL EN EL PATRON
+  -------                                              ----------------
+  Frontend/src/app/services/servicio-notificacion.ts  Subject (emisor de eventos)
+  Frontend/src/app/components/header/header.ts        Observer 1 (campana)
+  Frontend/src/app/pages/mostrar-amigos/mostrar-amigos.ts  Observer 2 (lista amigos)
+  Backend/services/notificacion_service.py            Logica de negocio (persistencia)
+  Backend/controllers/notificacion_controller.py      API REST de notificaciones
+
+================================================================================
+  PARTE 4: COMENTARIOS EN EL CODIGO (Diagrama de Secuencia CU0022)
+================================================================================
+
+El codigo fuente tiene comentarios con el formato [OBSERVER - Paso N] que marcan
+cada mensaje del diagrama de secuencia CU0022 ("Enviar Notificacion").
+
+La relacion entre el diagrama y el codigo no es 1 a 1, pero los pasos siguen
+el mismo orden de mensajes del diagrama.
+
+TABLA DE TRAZABILIDAD
+---------------------
+
+  PASO   QUE INDICA EN EL DIAGRAMA              DONDE ESTA EN EL CODIGO
+  ----   ---------------------------------       ------------------------------------------
+  1      Sistema inicia "Enviar Notificacion"    mostrar-amigos.ts : eliminarAmigo()
+           (el componente construye el objeto)     -> construye el objeto notificacion
+
+  2      Notificacion → ServicioNotificacion:    mostrar-amigos.ts : eliminarAmigo()
+           enviaNotificacion(notificacion)          -> llama notificationService.enviarNotificacion()
+
+  3      ServicioNotificacion →                  servicio-notificacion.ts : enviarNotificacion()
+           NotificacionController:                  -> HTTP POST /api/notificaciones/enviar
+           enviarNotificacion()
+
+  4      NotificacionController →                notificacion_controller.py : enviar_notificacion()
+           NotificacionService:                     -> recibe la peticion y delega al service
+           enviar_notificacion(notificacion)
+
+  5/6    NotificacionService → UsuarioRepository notificacion_service.py : enviar_notificacion()
+           get() → retorna user                     -> usuario_repository.find(user_id)
+
+  7      NotificacionService →                   notificacion_service.py : enviar_notificacion()
+           NotificacionRepository:                  -> instancia Notificacion() (self-call del diagrama)
+           save notification()                       -> repository.save(notificacion)
+           + "creando notificacion" (self-call)
+
+  8      Retorna schema al controller             notificacion_service.py : enviar_notificacion()
+                                                    -> return notificacion_guardada
+
+  9      Retorna 201 al frontend                  notificacion_controller.py : enviar_notificacion()
+                                                    -> return ..., 201
+
+  10     ServicioNotificacion retorna JSON        mostrar-amigos.ts : eliminarAmigo()
+           ("Mensaje de exito")                     -> callback next() recibe notifResponse
+
+  11     Componente dispara el Subject            mostrar-amigos.ts : eliminarAmigo()
+           (inicio del patron Observer)              -> notificationService.emitNotificationRefresh()
+                                                   servicio-notificacion.ts : emitNotificationRefresh()
+                                                    -> notificationSubject.next()
+
+  ---    Observer 1 recibe el evento              header.ts : ngOnInit()
+           (no esta en el diagrama CU0022,          -> suscripto via onNotificationRefresh()
+           pertenece al flujo del Observer)          -> recarga notificaciones automaticamente
+
+  ---    Observer 2 recibe el evento              mostrar-amigos.ts : ngOnInit()
+           (idem)                                   -> suscripto via getNotificationObservable()
+                                                    -> actualiza lista de notificaciones
+
+COMO LEER LOS COMENTARIOS EN EL CODIGO
+---------------------------------------
+
+Buscar en los archivos la etiqueta [OBSERVER - Paso N] para ubicar exactamente
+donde ocurre cada mensaje del diagrama. Ejemplo:
+
+  // [OBSERVER - Paso 2] Notificacion → ServicioNotificacion: enviaNotificacion(notificacion)
+  this.notificationService.enviarNotificacion(notificacion).subscribe({...})
+
+  # [OBSERVER - Paso 4] NotificacionController recibe la peticion y delega a NotificacionService
+  def enviar_notificacion(self):
+
+Los comentarios [OBSERVER - Subject] y [OBSERVER - Observer 1/2] marcan los roles
+del patron que no tienen un paso numerado en el diagrama CU0022 pero son parte
+central de la implementacion.
+
+================================================================================

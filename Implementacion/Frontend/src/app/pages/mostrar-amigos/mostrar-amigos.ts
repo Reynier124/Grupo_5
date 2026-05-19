@@ -29,7 +29,7 @@ export class MostrarAmigos {
     this.loadNotifications();
     });
 
-    // PATRÓN OBSERVER: Suscribirse a nuevas notificaciones
+    // [OBSERVER - Observer 2] MostrarAmigos se suscribe al Subject para reaccionar a nuevas notificaciones
     this.notificationSubscription = this.notificationService
       .getNotificationObservable()
       .subscribe(notification => {
@@ -76,7 +76,7 @@ export class MostrarAmigos {
           // 2. Remover de la lista local
           this.friends = this.friends.filter(f => f.id !== friendId);
           
-          // 3. PATRÓN OBSERVER: Enviar notificación al backend
+          // [OBSERVER - Paso 1] Sistema inicia "Enviar Notificación": el componente construye el objeto notificacion
           const notificacion = {
             destinatario: this.userId,
             mensaje: `Has eliminado a ${friendName} de tu lista de amigos`,
@@ -84,10 +84,13 @@ export class MostrarAmigos {
           };
 
           console.log('Enviando notificación:', notificacion , "al usuario ID:", this.userId);
-          
+
+          // [OBSERVER - Paso 2] Notificación → ServicioNotificacion: enviaNotificacion(notificacion)
           this.notificationService.enviarNotificacion(notificacion).subscribe({
             next: (notifResponse) => {
+              // [OBSERVER - Paso 10] ServicioNotificacion retorna JSON → componente recibe mensaje de éxito
               console.log('Notificación creada:', notifResponse);
+              // [OBSERVER - Paso 11] Componente dispara el Subject: notifica a todos los Observers suscriptos
               this.notificationService.emitNotificationRefresh();
               this.loadNotifications();
             },

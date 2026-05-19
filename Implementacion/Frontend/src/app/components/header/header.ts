@@ -19,7 +19,7 @@ export class Header {
   ngOnInit(): void {
     this.loadNotifications();
 
-    // 2️⃣ Observer → volver a consultar backend
+    // [OBSERVER - Observer 1] Header se suscribe al Subject: recibe el evento del Paso 11 y recarga notificaciones
     this.subscription = this.notificationService
       .onNotificationRefresh()
       .subscribe(() => {

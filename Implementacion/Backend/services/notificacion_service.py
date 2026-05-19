@@ -17,18 +17,14 @@ class NotificacionService(BaseServiceImpl):
         return self.repository.find_by_user(destinatario)
 
     def enviar_notificacion(self, notificacion_data):
-        """
-        Envía (crea) una notificación
-        notificacion_data: dict con {destinatario, mensaje, tipo}
-        """
         user_id = notificacion_data.destinatario
         print(user_id)
-        # Validar que el usuario existe
+        # [OBSERVER - Paso 5] NotificacionService valida usuario: get() → UsuarioRepository → retorna user (Paso 6)
         usuario = self.usuario_repository.find(user_id)
         if not usuario:
             raise ValueError("Usuario no encontrado")
-        
-        # Crear la notificación
+
+        # [OBSERVER - Paso 7] Creando notificacion (self-call en el diagrama: NotificacionRepository instancia el objeto)
         notificacion = Notificacion(
             usuario_id=user_id,
             mensaje=notificacion_data.mensaje,
@@ -36,10 +32,11 @@ class NotificacionService(BaseServiceImpl):
             leida=False,
             fecha_hora=datetime.utcnow()
         )
-        
-        # Guardar en BD a través del repository
+
+        # [OBSERVER - Paso 7] NotificacionService → NotificacionRepository: save notification()
         notificacion_guardada = self.repository.save(notificacion)
-        
+
+        # [OBSERVER - Paso 8] Retorna schema al NotificacionController
         return notificacion_guardada
       
     def marcar_como_leida(self, id: int):
